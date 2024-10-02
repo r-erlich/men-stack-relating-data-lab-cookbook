@@ -6,16 +6,17 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const morgan = require("morgan");
 const session = require("express-session");
-const isSignedIn = require('./middleware/is-signed-in.js');
-const passUserToView = require('./middleware/pass-user-to-view.js');
+const isSignedIn = require("./middleware/is-signed-in.js");
+const passUserToView = require("./middleware/pass-user-to-view.js");
 
 const authController = require("./controllers/auth.js");
-const recipesController = require('./controllers/recipes.js');
-const ingredientsController = require('./controllers/ingredients.js');
+const recipesController = require("./controllers/recipes.js");
+const ingredientsController = require("./controllers/ingredients.js");
 
 const port = process.env.PORT ? process.env.PORT : "3000";
 
 mongoose.connect(process.env.MONGODB_URI);
+
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 app.use(morgan("dev"));
@@ -26,6 +27,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+
 app.get("/", (req, res) => {
   res.render("index.ejs", {
     user: req.session.user,
@@ -34,8 +36,6 @@ app.get("/", (req, res) => {
 
 app.use(passUserToView);
 app.use("/auth", authController);
-app.use('/recipes', recipesController);
-app.use('/ingredients', ingredientsController);
 app.use(isSignedIn);
 app.use("/recipes", recipesController);
 app.use("/ingredients", ingredientsController);
